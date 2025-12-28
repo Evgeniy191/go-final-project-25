@@ -10,6 +10,7 @@ func main() {
 	if err := db.Init("scheduler.db"); err != nil {
 		log.Fatalf("Failed to initialize database: %v", err)
 	}
+	defer db.Close()
 
 	log.Println("Database initialized successfully")
 

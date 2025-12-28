@@ -5,6 +5,8 @@ import (
 	"time"
 )
 
+const TaskLimit = 50
+
 type Task struct {
 	ID      int64  `db:"id" json:"id,string"`
 	Date    string `db:"date" json:"date"`
@@ -28,7 +30,7 @@ VALUES (?, ?, ?, ?)
 
 func Tasks(limit int) ([]*Task, error) {
 	if limit <= 0 {
-		limit = 50
+		limit = TaskLimit
 	}
 
 	rows, err := DB.Query(
@@ -144,7 +146,7 @@ func SearchTasks(search string) ([]*Task, error) {
              FROM scheduler 
              WHERE date = ? 
              ORDER BY date 
-             LIMIT 50`, dateStr)
+             LIMIT ?`, dateStr, TaskLimit)
 		if err != nil {
 			return nil, err
 		}
@@ -156,7 +158,7 @@ func SearchTasks(search string) ([]*Task, error) {
              FROM scheduler 
              WHERE title LIKE ? OR comment LIKE ? 
              ORDER BY date 
-             LIMIT 50`, searchPattern, searchPattern)
+             LIMIT ?`, searchPattern, searchPattern, TaskLimit)
 		if err != nil {
 			return nil, err
 		}
